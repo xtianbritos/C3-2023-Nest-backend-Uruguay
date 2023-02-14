@@ -2,10 +2,6 @@ import { IsEmail, IsNotEmpty, IsString, IsUUID, Length } from 'class-validator';
 
 export class SignInDto {
 
-    @IsUUID(4, { message: "this must to be uuid v4" })
-    @IsNotEmpty()
-    id: string;
-
     @IsEmail(undefined, { message: 'the data provider is not a valid email.' })
     @IsString()
     @IsNotEmpty()

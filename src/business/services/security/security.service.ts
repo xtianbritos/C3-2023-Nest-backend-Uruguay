@@ -34,23 +34,22 @@ import { NotFoundException } from '@nestjs/common';
     /**
      * Identificarse en el sistema
      */
-    signIn(user: SignInDto): string {
-      const customerExisting = this.customerService.getCustomerInfo(user.id);
+    signIn(user: SignInDto): Object {
       
       const answer = this.customerService.findOneByEmailAndPassword(
         user.username,
-        user.password,
+        user.password
       );
       const token: string = this.jwtService.sign({username: user.username, password: user.password});
 
-      if (answer) return token;
+      if (answer) return {jwt: token};
       else throw new UnauthorizedException();
     }
   
     /**
      * Crear usuario en el sistema
      */
-    signUp(user: SignUpDto): string {
+    signUp(user: SignUpDto): Object {
     
       const newCustomer: CustomerDto = {
         documentType: user.documentTypeId,
@@ -77,7 +76,7 @@ import { NotFoundException } from '@nestjs/common';
         
         const token: string = this.jwtService.sign({id: account.id});
         
-        if (account) return token;
+        if (account) return {jwt: token};
         else throw new InternalServerErrorException({statusCode: 500, message: 'Account cannot be created'});
       }
       else throw new InternalServerErrorException({statusCode: 500, message: 'Customer cannot be register'});
@@ -86,18 +85,19 @@ import { NotFoundException } from '@nestjs/common';
     /**
      * Salir del sistema
      */
-    signOut(JWToken: SignOutDto): void {
+    signOut(JWToken: SignOutDto): boolean {
       const customer = this.jwtService.verify(JWToken.jwt);
       
-      if(customer) {
-        const answer = this.customerService.findOneByEmailAndPassword(
-          customer.username,
-          customer.password,
-        );
+      if(!customer) return false;
 
-        if(answer) console.log('The user signed out');
-      }
-      else throw new InternalServerErrorException();
+      const answer = this.customerService.findOneByEmailAndPassword(
+        customer.username,
+        customer.password,
+      );
+
+      if(answer) return true;
+      return false;
+      
     }
     
   }

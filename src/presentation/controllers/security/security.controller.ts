@@ -14,20 +14,20 @@ export class SecurityController {
 
     @Post('signup')
     @UsePipes(new ValidationPipe())
-    signUp(@Body() signUp: SignUpDto): string{
+    signUp(@Body() signUp: SignUpDto): Object{
         return this.securityService.signUp(signUp);
     }
 
     @Post('signin')
     @UsePipes(new ValidationPipe())
-    signIn(@Body() signIn: SignInDto): string{
+    signIn(@Body() signIn: SignInDto): Object{
         return this.securityService.signIn(signIn);
     }
 
     @Post('signout')
     @UsePipes(new ValidationPipe())
-    signOut(@Body() signIn: SignOutDto): void{
-        this.securityService.signOut(signIn);
+    signOut(@Body() signIn: SignOutDto): boolean{
+        return this.securityService.signOut(signIn);
     }
 
     @Post('customer')
